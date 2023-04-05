@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialFDSState = {
   inputCommand: '',
-  inputCommandsList: [],
+  history: [],
 };
 
 const fileDirectorySystemSlice = createSlice({
@@ -12,8 +12,8 @@ const fileDirectorySystemSlice = createSlice({
     setInputCommand: (state: { inputCommand: string }, action: { payload: string }) => {
       state.inputCommand = action.payload;
     },
-    setInputCommandsList: (state: { inputCommandsList: string[] }, action: { payload: string }) => {
-      state.inputCommandsList = [...state.inputCommandsList, action.payload];
+    setHistory: (state: { history: string[] }, action: { payload: string }) => {
+      state.history = [...state.history, action.payload];
     },
   },
 });

@@ -10,6 +10,7 @@ import type { FDSState } from '../types';
 function CommandInput() {
   const dispatch = useDispatch();
   const inputCommand = useSelector((state: FDSState) => state.fileDirectorySystem.inputCommand);
+  // const history = useSelector((state: FDSState) => state.fileDirectorySystem.history);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(fileDirectorySystemActions.setInputCommand(event.target.value));
@@ -17,7 +18,7 @@ function CommandInput() {
 
   const handleInputEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      dispatch(fileDirectorySystemActions.setInputCommandsList(inputCommand));
+      dispatch(fileDirectorySystemActions.setHistory(inputCommand));
       dispatch(fileDirectorySystemActions.setInputCommand(''));
     }
   };

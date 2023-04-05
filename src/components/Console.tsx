@@ -8,11 +8,11 @@ import CommandInput from './ui/CommandInput';
 import type { FDSState } from './types';
 
 function Console() {
-  const inputCommandsList = useSelector(
-    (state: FDSState) => state.fileDirectorySystem.inputCommandsList,
+  const history = useSelector(
+    (state: FDSState) => state.fileDirectorySystem.history,
   );
 
-  const listItems = inputCommandsList.map((command, index): JSX.Element => {
+  const listItems = history.map((command, index): JSX.Element => {
     return (
       <div key={index}>
         <StyledCyanText>student </StyledCyanText>
