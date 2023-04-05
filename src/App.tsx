@@ -1,19 +1,13 @@
 import React from 'react';
 
-import styled from 'styled-components';
-
-import './App.css';
+import Background from './components/Background';
 
 function App() {
   return (
     <div>
-      <StyledHello>Hello, world!</StyledHello>
+      <Background />
     </div>
   );
 }
-
-const StyledHello = styled.h1`
-  color: red;
-`;
 
 export default App;
