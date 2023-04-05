@@ -18,7 +18,7 @@ const StyledBackground = styled.div`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(#e66465, #9198e5);
+  background: linear-gradient(#6e45e2, #88d3ce);
 `;
 
 export default Background;

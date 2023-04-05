@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import CommandInput from './ui/CommandInput';
+
+import type { FDSState } from './types';
+
 function Console() {
-  const [inputCommandsList, setInputCommandsList] = useState<string[]>([]);
-  const [inputCommand, setInputCommand] = useState('');
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputCommand(event.target.value);
-  };
-
-  const handleInputEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      setInputCommandsList([...inputCommandsList, inputCommand]);
-      setInputCommand('');
-    }
-  };
+  const inputCommandsList = useSelector(
+    (state: FDSState) => state.fileDirectorySystem.inputCommandsList,
+  );
 
   const listItems = inputCommandsList.map((command, index): JSX.Element => {
     return (
@@ -33,15 +28,7 @@ function Console() {
       <StyledConsoleBody>
         <StyledConsoleTexts>{listItems}</StyledConsoleTexts>
       </StyledConsoleBody>
-      <StyledConsoleInputWrapper>
-        <StyledConsoleInput
-          type='text'
-          value={inputCommand}
-          placeholder='Type any command'
-          onChange={handleInputChange}
-          onKeyDown={handleInputEnter}
-        ></StyledConsoleInput>
-      </StyledConsoleInputWrapper>
+      <CommandInput />
     </StyledConsole>
   );
 }
@@ -78,37 +65,10 @@ const StyledConsoleTitleBar = styled.div`
   align-items: center;
   color: #fff;
   font-size: 1.2rem;
-  background-color: #707070;
+  background-color: #303030;
   width: 100%;
   height: 3rem;
   border-radius: 10px 10px 0 0;
-`;
-
-const StyledConsoleInputWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #000000;
-  width: 100%;
-  height: 3rem;
-  border-radius: 0 0 10px 10px;
-`;
-
-const StyledConsoleInput = styled.input`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  color: #fff;
-  font-size: 1.2rem;
-  background-color: #000000;
-  width: 90%;
-  height: 2rem;
-  border: 0;
-  &:focus {
-    border: 0;
-    box-shadow: inner 0 0 4px #707070d0;
-  }
 `;
 
 const StyledCyanText = styled.span`
