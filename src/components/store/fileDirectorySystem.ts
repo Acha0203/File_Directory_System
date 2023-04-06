@@ -4,10 +4,10 @@ import type { Command } from '../types';
 
 const initialFDSState = {
   inputCommand: '',
-  history: [{id: -1, command: ''}],
+  history: [{ id: -1, command: '' }],
 };
 
-const fileDirectorySystemSlice = createSlice({
+const fileDirectorySlice = createSlice({
   name: 'fileDirectorySystem',
   initialState: initialFDSState,
   reducers: {
@@ -23,6 +23,6 @@ const fileDirectorySystemSlice = createSlice({
   },
 });
 
-export const fileDirectorySystemActions = fileDirectorySystemSlice.actions;
+export const fileDirectoryActions = fileDirectorySlice.actions;
 
-export default fileDirectorySystemSlice.reducer;
+export default fileDirectorySlice.reducer;

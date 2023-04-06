@@ -8,4 +8,4 @@ export type FDSState = {
 export type Command = {
   id: number;
   command: string;
-}
+};
