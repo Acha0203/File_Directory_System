@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -10,18 +10,74 @@ import type { FDSState } from '../types';
 function CommandInput() {
   const dispatch = useDispatch();
   const inputCommand = useSelector((state: FDSState) => state.fileDirectorySystem.inputCommand);
-  // const history = useSelector((state: FDSState) => state.fileDirectorySystem.history);
+  const history = useSelector((state: FDSState) => state.fileDirectorySystem.history);
+  const [currentHistoryId, setCurrentHistoryId] = useState(0);
+  const [historyId, setHistoryId] = useState(0);
+  const [isBackward, setIsBackward] = useState(false);
+  const [isForward, setIsForward] = useState(false);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     dispatch(fileDirectorySystemActions.setInputCommand(event.target.value));
-  };
+  }
 
-  const handleInputEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
-      dispatch(fileDirectorySystemActions.setHistory(inputCommand));
+      if (history[0].id <= -1) {
+        dispatch(fileDirectorySystemActions.clearHistory());
+      }
+      dispatch(fileDirectorySystemActions.addHistory({ id: historyId, command: inputCommand }));
       dispatch(fileDirectorySystemActions.setInputCommand(''));
+      setCurrentHistoryId(historyId);
+      setHistoryId((prevHistoryId) => prevHistoryId + 1);
+      setIsBackward(false);
+      setIsForward(false);
+    } else if (event.key === 'ArrowUp' && history.length > 0) {
+      if (isBackward || isForward) {
+        if (currentHistoryId > 0) {
+          dispatch(
+            fileDirectorySystemActions.setInputCommand(history[currentHistoryId - 1].command),
+          );
+          setCurrentHistoryId((prevHistoryId) => prevHistoryId - 1);
+        } else {
+          dispatch(fileDirectorySystemActions.setInputCommand(history[history.length - 1].command));
+          setCurrentHistoryId(history.length - 1);
+        }
+      } else {
+        dispatch(fileDirectorySystemActions.setInputCommand(history[currentHistoryId].command));
+      }
+      setIsBackward(true);
+      setIsForward(false);
+    } else if (event.key === 'ArrowDown' && history.length > 0) {
+      if (isBackward || isForward) {
+        if (currentHistoryId >= history.length - 1) {
+          dispatch(fileDirectorySystemActions.setInputCommand(history[0].command));
+          setCurrentHistoryId(0);
+        } else {
+          dispatch(
+            fileDirectorySystemActions.setInputCommand(history[currentHistoryId + 1].command),
+          );
+          setCurrentHistoryId((prevHistoryId) => prevHistoryId + 1);
+        }
+      } else {
+        dispatch(fileDirectorySystemActions.setInputCommand(history[0].command));
+        setCurrentHistoryId(0);
+      }
+      setIsForward(true);
+      setIsBackward(false);
     }
-  };
+
+    return;
+  }
+
+  // useEffect(() => {
+  //   console.log(history);
+  //   console.log(historyId);
+  //   console.log(currentHistoryId);
+  //   console.log(history[currentHistoryId].command);
+  //   console.log(inputCommand);
+  //   console.log(isBackward);
+  //   console.log(isForward);
+  // }, [history, historyId, currentHistoryId, inputCommand, isBackward, isForward]);
 
   return (
     <StyledConsoleInputWrapper>
@@ -30,7 +86,7 @@ function CommandInput() {
         value={inputCommand}
         placeholder='Type any command'
         onChange={handleInputChange}
-        onKeyDown={handleInputEnter}
+        onKeyDown={handleKeyPress}
       ></StyledConsoleInput>
     </StyledConsoleInputWrapper>
   );

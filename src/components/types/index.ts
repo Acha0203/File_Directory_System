@@ -1,6 +1,11 @@
 export type FDSState = {
   fileDirectorySystem: {
     inputCommand: string;
-    history: string[];
+    history: Command[];
   };
 };
+
+export type Command = {
+  id: number;
+  command: string;
+}

@@ -8,16 +8,14 @@ import CommandInput from './ui/CommandInput';
 import type { FDSState } from './types';
 
 function Console() {
-  const history = useSelector(
-    (state: FDSState) => state.fileDirectorySystem.history,
-  );
+  const history = useSelector((state: FDSState) => state.fileDirectorySystem.history);
 
-  const listItems = history.map((command, index): JSX.Element => {
+  const listItems = history.map((command): JSX.Element => {
     return (
-      <div key={index}>
+      <div key={command.id}>
         <StyledCyanText>student </StyledCyanText>
         <StyledMagentaText>@ </StyledMagentaText>
-        <StyledLimeText>recursionist:</StyledLimeText>&nbsp;{command}
+        <StyledLimeText>recursionist:</StyledLimeText>&nbsp;{command.command}
       </div>
     );
   });
@@ -54,7 +52,7 @@ const StyledConsoleBody = styled.div`
   overflow: scroll;
 `;
 
-const StyledConsoleTexts = styled.p`
+const StyledConsoleTexts = styled.div`
   color: #fff;
   margin: 1rem;
 `;
