@@ -13,9 +13,21 @@ const Console = () => {
   const listItems = history.map((command): JSX.Element => {
     return (
       <div key={command.id}>
-        <StyledCyanText>student </StyledCyanText>
-        <StyledMagentaText>@ </StyledMagentaText>
-        <StyledLimeText>recursionist:</StyledLimeText>&nbsp;{command.command}
+        <div>
+          <StyledMagentaText>student </StyledMagentaText>
+          <StyledYellowText>@ </StyledYellowText>
+          <StyledLimeText>recursionist:</StyledLimeText>&nbsp;{command.command}
+        </div>
+        <div>
+          {command.isValid ? (
+            <span>
+              <StyledCyanText>MTools: </StyledCyanText>
+              {command.result}
+            </span>
+          ) : (
+            <StyledRedText>MToolsError: {command.result}</StyledRedText>
+          )}
+        </div>
       </div>
     );
   });
@@ -79,6 +91,14 @@ const StyledMagentaText = styled.span`
 
 const StyledLimeText = styled.span`
   color: Lime;
+`;
+
+const StyledRedText = styled.span`
+  color: red;
+`;
+
+const StyledYellowText = styled.span`
+  color: yellow;
 `;
 
 export default Console;

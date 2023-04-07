@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import Background from './components/Background';
-import store from './store/intex';
+import store from './store';
 
 function App() {
   return (

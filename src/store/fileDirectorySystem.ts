@@ -4,7 +4,7 @@ import type { Command } from '../types';
 
 const initialFDSState = {
   inputCommand: '',
-  history: [{ id: -1, command: '' }],
+  history: [{ id: -1, command: '', isValid: false,  result: '' }],
 };
 
 const fileDirectorySlice = createSlice({

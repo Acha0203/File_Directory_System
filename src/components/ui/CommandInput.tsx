@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { MTools } from '../../model/intex';
+import { MTools } from '../../model';
 import { fileDirectoryActions } from '../../store/fileDirectorySystem';
 
 import type { FDSState } from '../../types';
@@ -28,14 +28,31 @@ const CommandInput = () => {
         if (history[0].id <= -1) {
           dispatch(fileDirectoryActions.clearHistory());
         }
-        dispatch(fileDirectoryActions.addHistory({ id: historyId, command: inputCommand }));
-        dispatch(
-          fileDirectoryActions.setInputCommand(
-            MTools.evaluatedResultsStringFromParsedStringInputArray(
-              MTools.commandLineParser(inputCommand),
-            ),
-          ),
+        const validatorResponse = MTools.parsedArrayValidator(
+          MTools.commandLineParser(inputCommand),
         );
+        if (!validatorResponse.isValid) {
+          dispatch(
+            fileDirectoryActions.addHistory({
+              id: historyId,
+              command: inputCommand,
+              isValid: false,
+              result: validatorResponse.errorMessage,
+            }),
+          );
+        } else {
+          dispatch(
+            fileDirectoryActions.addHistory({
+              id: historyId,
+              command: inputCommand,
+              isValid: true,
+              result: MTools.evaluatedResultsStringFromParsedCLIArray(
+                MTools.commandLineParser(inputCommand),
+              ),
+            }),
+          );
+        }
+        dispatch(fileDirectoryActions.setInputCommand(''));
         setCurrentHistoryId(historyId);
         setHistoryId((prevHistoryId) => prevHistoryId + 1);
         setDirection('none');
