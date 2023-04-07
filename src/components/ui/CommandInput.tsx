@@ -3,11 +3,12 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { fileDirectoryActions } from '../store/fileDirectorySystem';
+import { MTools } from '../../model/intex';
+import { fileDirectoryActions } from '../../store/fileDirectorySystem';
 
-import type { FDSState } from '../types';
+import type { FDSState } from '../../types';
 
-function CommandInput() {
+const CommandInput = () => {
   const dispatch = useDispatch();
   const { inputCommand, history } = useSelector((state: FDSState) => state.fileDirectorySystem);
   const [currentHistoryId, setCurrentHistoryId] = useState(0);
@@ -28,7 +29,13 @@ function CommandInput() {
           dispatch(fileDirectoryActions.clearHistory());
         }
         dispatch(fileDirectoryActions.addHistory({ id: historyId, command: inputCommand }));
-        dispatch(fileDirectoryActions.setInputCommand(''));
+        dispatch(
+          fileDirectoryActions.setInputCommand(
+            MTools.evaluatedResultsStringFromParsedStringInputArray(
+              MTools.commandLineParser(inputCommand),
+            ),
+          ),
+        );
         setCurrentHistoryId(historyId);
         setHistoryId((prevHistoryId) => prevHistoryId + 1);
         setDirection('none');
@@ -87,7 +94,7 @@ function CommandInput() {
       ></StyledConsoleInput>
     </StyledConsoleInputWrapper>
   );
-}
+};
 
 const StyledConsoleInputWrapper = styled.div`
   display: flex;

@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import CommandInput from './ui/CommandInput';
 
-import type { FDSState } from './types';
+import type { FDSState } from '../types';
 
-function Console() {
+const Console = () => {
   const history = useSelector((state: FDSState) => state.fileDirectorySystem.history);
 
   const listItems = history.map((command): JSX.Element => {
@@ -29,7 +29,7 @@ function Console() {
       <CommandInput />
     </StyledConsole>
   );
-}
+};
 
 const StyledConsole = styled.div`
   display: flex;
