@@ -96,19 +96,19 @@ export class MTools {
       'ceil',
       'floor',
     ];
-    if (parsedStringInputArray[0] != 'MTools') {
+    if (parsedStringInputArray[0] !== 'MTools') {
       return {
         isValid: false,
         errorMessage: `only MTools package supported by this app. input must start with 'MTools'`,
       };
     }
-    if (parsedStringInputArray.length != 3) {
+    if (parsedStringInputArray.length !== 3) {
       return {
         isValid: false,
         errorMessage: `command line input must contain exactly 3 elements: 'packageName commandName arguments'`,
       };
     }
-    if (validCommandList.indexOf(parsedStringInputArray[1]) == -1) {
+    if (validCommandList.indexOf(parsedStringInputArray[1]) === -1) {
       return {
         isValid: false,
         errorMessage: `MTools only supports the following commands: ${validCommandList.join(',')}`,
@@ -136,12 +136,12 @@ export class MTools {
     let isSingle = false;
 
     // 与えられたコマンドが単一の引数を必要とする場合、コマンドと引数をsingle argument validatorに渡します。
-    if (singleArgumentCommands.indexOf(commandArgsArray[0]) != -1) {
+    if (singleArgumentCommands.indexOf(commandArgsArray[0]) !== -1) {
       isSingle = true;
     }
 
     // 与えられたコマンドが2つの引数を必要とする場合、コマンドと引数をdouble argument validatorに渡します。
-    if (doubleArgumentCommands.indexOf(commandArgsArray[0]) != -1) {
+    if (doubleArgumentCommands.indexOf(commandArgsArray[0]) !== -1) {
       isSingle = false;
     }
 
@@ -159,9 +159,9 @@ export class MTools {
       - 二番目のトークンが'sqrt'の場合、引数は負の値であってはいけません。
   */
   static singleArgValidator(commandName: string, argsArray: number[]): ValidationResult {
-    if (argsArray.length != 1)
+    if (argsArray.length !== 1)
       return { isValid: false, errorMessage: `command ${commandName} requires exactly 1 argument` };
-    if (commandName == 'sqrt' && argsArray[1] < 0)
+    if (commandName === 'sqrt' && argsArray[1] < 0)
       return {
         isValid: false,
         errorMessage: `command ${commandName} only supports arguments with value >= 0`,
@@ -181,22 +181,22 @@ export class MTools {
       - 二番目のトークンが'divide'の場合、第二引数は0であってはいけません。
   */
   static doubleArgValidator(commandName: string, argsArray: number[]): ValidationResult {
-    if (argsArray.length != 2) {
+    if (argsArray.length !== 2) {
       return {
         isValid: false,
         errorMessage: `command ${commandName} requires exactly 2 arguments`,
       };
     }
-    if (commandName == 'divide' && argsArray[1] == 0) {
-      return { isValid: false, errorMessage: `command ${commandName} requires divisors != 0` };
+    if (commandName === 'divide' && argsArray[1] === 0) {
+      return { isValid: false, errorMessage: `command ${commandName} requires divisors !== 0` };
     }
-    if ((commandName == 'log' && argsArray[0] <= 0) || argsArray[0] == 1) {
+    if ((commandName === 'log' && argsArray[0] <= 0) || argsArray[0] === 1) {
       return {
         isValid: false,
         errorMessage: `command ${commandName} requires a base > 0 and not equal to 1`,
       };
     }
-    if ((commandName == 'log' && argsArray[0] <= 0) || argsArray[0] == 1) {
+    if ((commandName === 'log' && argsArray[0] <= 0) || argsArray[0] === 1) {
       return {
         isValid: false,
         errorMessage: `command ${commandName} requires a positive antilogarithm`,
@@ -215,7 +215,7 @@ export class MTools {
   static allStringElementsOfArrayContainNumbers(inputArray: string[]): boolean {
     return inputArray.reduce((elementsAreNumbers, currentElement) => {
       const parsedNum = Number(currentElement);
-      return elementsAreNumbers && typeof parsedNum == 'number' && !isNaN(parsedNum);
+      return elementsAreNumbers && typeof parsedNum === 'number' && !isNaN(parsedNum);
     }, true);
   }
 
@@ -231,17 +231,17 @@ export class MTools {
     const argA = argsArray[0];
     const argB = argsArray[1];
 
-    if (PCA[1] == 'add') result = argA + argB;
-    else if (PCA[1] == 'subtract') result = argA - argB;
-    else if (PCA[1] == 'multiply') result = argA * argB;
-    else if (PCA[1] == 'divide') result = argA / argB;
-    else if (PCA[1] == 'exp') result = Math.pow(argA, argB);
-    else if (PCA[1] == 'log') result = Math.log(argB) / Math.log(argA);
-    else if (PCA[1] == 'sqrt') result = Math.sqrt(argA);
-    else if (PCA[1] == 'abs') result = Math.abs(argA);
-    else if (PCA[1] == 'round') result = Math.round(argA);
-    else if (PCA[1] == 'ceil') result = Math.ceil(argA);
-    else if (PCA[1] == 'floor') result = Math.floor(argA);
+    if (PCA[1] === 'add') result = argA + argB;
+    else if (PCA[1] === 'subtract') result = argA - argB;
+    else if (PCA[1] === 'multiply') result = argA * argB;
+    else if (PCA[1] === 'divide') result = argA / argB;
+    else if (PCA[1] === 'exp') result = Math.pow(argA, argB);
+    else if (PCA[1] === 'log') result = Math.log(argB) / Math.log(argA);
+    else if (PCA[1] === 'sqrt') result = Math.sqrt(argA);
+    else if (PCA[1] === 'abs') result = Math.abs(argA);
+    else if (PCA[1] === 'round') result = Math.round(argA);
+    else if (PCA[1] === 'ceil') result = Math.ceil(argA);
+    else if (PCA[1] === 'floor') result = Math.floor(argA);
     else console.log('MTools.evaluatedResultsStringFromParsedCLIArray:: invalid command name');
 
     return `your result is: ${result}`;
