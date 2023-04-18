@@ -2,6 +2,7 @@
   "name": "file-directory-system",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Acha0203.github.io/File_Directory_System/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
@@ -23,6 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "deploy": "npm run build && gh-pages -d build",
     "lint": "run-p -c -l lint:**",
     "lint:prettier": "prettier --check .",
     "lint:eslint": "eslint . --ext .ts,.tsx",
@@ -58,6 +60,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "gh-pages": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "prettier": "2.8.7"
   }
