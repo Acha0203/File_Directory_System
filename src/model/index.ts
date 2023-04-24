@@ -62,7 +62,7 @@ export class MTools {
 
   static parsedArrayValidator(parsedStringInputArray: string[]): ValidationResult {
     // すべてのコマンドに適用されるルールに照らし合わせて入力をチェックします。
-    let validatorResponse = MTools.universalValidator(parsedStringInputArray);
+    let validatorResponse = MTools.universalMToolsValidator(parsedStringInputArray);
     if (!validatorResponse.isValid) return validatorResponse;
 
     // 入力が最初のvalidatorを通過した場合、どのコマンドが与えられたかに基づいて、より具体的な入力の検証を行います。
@@ -82,7 +82,7 @@ export class MTools {
       - 第二トークンは以下の1つになります。 {"add", "subtract", "multiply", "divide", "exp", "log", "abs","sqrt", "round", "ceil", "floor"}
       - 第三のトークンの引数は、変換された数値を、","で分割することで、さらに解析できるようにする必要があります。
   */
-  static universalValidator(parsedStringInputArray: string[]): ValidationResult {
+  static universalMToolsValidator(parsedStringInputArray: string[]): ValidationResult {
     const validCommandList = [
       'add',
       'subtract',
