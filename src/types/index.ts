@@ -7,12 +7,14 @@ export type FDSState = {
 
 export type Command = {
   id: number;
+  tool: string;
   command: string;
   isValid: boolean;
   result: string;
 };
 
 export type ValidationResult = {
+  tool: string;
   isValid: boolean;
   errorMessage: string;
 }

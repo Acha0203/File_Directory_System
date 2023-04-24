@@ -18,16 +18,20 @@ const Console = () => {
           <StyledYellowText>@ </StyledYellowText>
           <StyledLimeText>recursionist:</StyledLimeText>&nbsp;{command.command}
         </div>
-        <div>
-          {command.isValid ? (
-            <span>
-              <StyledCyanText>MTools: </StyledCyanText>
-              {command.result}
-            </span>
-          ) : (
-            <StyledRedText>MToolsError: {command.result}</StyledRedText>
-          )}
-        </div>
+        {command.tool !== '' && (
+          <div>
+            {command.isValid ? (
+              <span>
+                <StyledCyanText>{command.tool}: </StyledCyanText>
+                {command.result}
+              </span>
+            ) : (
+              <StyledRedText>
+                {command.tool} error: {command.result}
+              </StyledRedText>
+            )}
+          </div>
+        )}
       </div>
     );
   });

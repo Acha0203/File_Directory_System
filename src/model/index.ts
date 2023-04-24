@@ -26,7 +26,7 @@ import type { ValidationResult } from '../types';
       - ハンドラから情報を受け取り、CLIOutputDivにDOMparagraphを追加する、専用のビュー関数で生成されるレスポンス
 */
 
-export class MTools {
+export class CommandLine {
   /*
     String CLIInputString : コマンドラインから取得した文字列としての入力全体 
     return StringArray : CLIInputStringを空白で区切った文字列の配列で、要素はpackageName, mathOperation, argumentA, argumentB(オプション)を表します。 
@@ -38,40 +38,8 @@ export class MTools {
     const parsedStringInputArray = CLIInputString.trim().split(' ');
     return parsedStringInputArray;
   }
-
-  /*
-    StringArray parsedStringInputArray : " "で分割されて文字列の配列(トークンと呼ばれる)になった元のコマンドライン入力。
-    return AssociativeArray : {'isValid': <Boolean>, 'errorMessage': <String>} の形。ここでは、'isValid'はコマンドラインからの入力が有効な場合には真、無効な場合には偽となります。
-    返される連想配列は、与えられた文字列配列が有効なトークンに対するMToolsのルールに従っているかどうかに応じて、'isValid'キーに対してtrueあるいはfalseを返すことができます。入力が有効でない場合は、errorMessageが設定されます。
-
-    このメソッドは、最初にすべてのコマンドのエラーをチェックし、入力がそのチェックを通過した場合、余分な制約（例えば、0で除算することができない等）がある場合には、各コマンドに対して固有のエラーをチェックします。
-
-    入力検証(universal, commandArguments)の各レベルには個別のチェックが含まれていますが、ここでは参考までにすべてのチェックのリストを示しています。
-      - 総トークン数は3である必要があります。
-      - packageNameを表す最初のトークンは、"MTools"である必要があります。
-      - commandNameを表す2番目のトークンは、以下のいずれか1つだけになります : {add"、"subtract"、"multiply"、"divide"、"exp"、"log"、"abs"、"sqrt"、"round"、"ceil"、"floor"}。
-
-      - 引数を表す第三のトークンは、変換された数値を、","で分割することで、さらに解析できるようにする必要があります。
-      - 第二のトークンが {"abs", "round", "ceil", "floor", "sqrt"}の場合、1つの引数だけ与えられます。
-      - 第二のトークンが {"add", "subtract", "multiply", "divide", "exp", "log"}の場合、2つの引数が与えられます。
-
-      - 第二のトークンが'divide'の場合、第二引数は0となってはいけません。
-      - 第二のトークンが'sqrt'の場合、引数は負の数となってはいけません。
-      - 第二のトークンが'log'の場合、第一引数は1より大きく、第二引数は正の数でなければなりません。
-  */
-
-  static parsedArrayValidator(parsedStringInputArray: string[]): ValidationResult {
-    // すべてのコマンドに適用されるルールに照らし合わせて入力をチェックします。
-    let validatorResponse = MTools.universalMToolsValidator(parsedStringInputArray);
-    if (!validatorResponse.isValid) return validatorResponse;
-
-    // 入力が最初のvalidatorを通過した場合、どのコマンドが与えられたかに基づいて、より具体的な入力の検証を行います。
-    validatorResponse = MTools.commandArgumentsValidator(parsedStringInputArray.slice(1, 3));
-    if (!validatorResponse.isValid) return validatorResponse;
-
-    return { isValid: true, errorMessage: '' };
-  }
-
+}
+export class MTools {
   /*
     StringArray parsedStringInputArray : " "で分割されて文字列の配列になった元のコマンドライン入力。
     return {'isValid': <Boolean>, 'errorMessage': <String>} : booleanは入力が有効かどうかに依存し、有効でない場合は文字列のエラーメッセージが設定されます。  
@@ -98,30 +66,34 @@ export class MTools {
     ];
     if (parsedStringInputArray[0] !== 'MTools') {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `only MTools package supported by this app. input must start with 'MTools'`,
       };
     }
     if (parsedStringInputArray.length !== 3) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `command line input must contain exactly 3 elements: 'packageName commandName arguments'`,
       };
     }
     if (validCommandList.indexOf(parsedStringInputArray[1]) === -1) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `MTools only supports the following commands: ${validCommandList.join(',')}`,
       };
     }
     if (!MTools.allStringElementsOfArrayContainNumbers(parsedStringInputArray[2].split(','))) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `last element of command line input, arguments, should contain only numbers and commas`,
       };
     }
 
-    return { isValid: true, errorMessage: '' };
+    return { tool: 'MTools', isValid: true, errorMessage: '' };
   }
   /*
     StringArray parsedStringInputArray : " "で分割されて文字列の配列になった元のコマンドライン入力。
@@ -160,14 +132,19 @@ export class MTools {
   */
   static singleArgValidator(commandName: string, argsArray: number[]): ValidationResult {
     if (argsArray.length !== 1)
-      return { isValid: false, errorMessage: `command ${commandName} requires exactly 1 argument` };
+      return {
+        tool: 'MTools',
+        isValid: false,
+        errorMessage: `command ${commandName} requires exactly 1 argument`,
+      };
     if (commandName === 'sqrt' && argsArray[1] < 0)
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `command ${commandName} only supports arguments with value >= 0`,
       };
 
-    return { isValid: true, errorMessage: '' };
+    return { tool: 'MTools', isValid: true, errorMessage: '' };
   }
 
   /*
@@ -183,27 +160,34 @@ export class MTools {
   static doubleArgValidator(commandName: string, argsArray: number[]): ValidationResult {
     if (argsArray.length !== 2) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `command ${commandName} requires exactly 2 arguments`,
       };
     }
     if (commandName === 'divide' && argsArray[1] === 0) {
-      return { isValid: false, errorMessage: `command ${commandName} requires divisors !== 0` };
+      return {
+        tool: 'MTools',
+        isValid: false,
+        errorMessage: `command ${commandName} requires divisors !== 0`,
+      };
     }
     if ((commandName === 'log' && argsArray[0] <= 0) || argsArray[0] === 1) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `command ${commandName} requires a base > 0 and not equal to 1`,
       };
     }
     if ((commandName === 'log' && argsArray[0] <= 0) || argsArray[0] === 1) {
       return {
+        tool: 'MTools',
         isValid: false,
         errorMessage: `command ${commandName} requires a positive antilogarithm`,
       };
     }
 
-    return { isValid: true, errorMessage: '' };
+    return { tool: 'MTools', isValid: true, errorMessage: '' };
   }
   /*
     StringArray inputArray : 文字列の配列
@@ -245,5 +229,77 @@ export class MTools {
     else console.log('MTools.evaluatedResultsStringFromParsedCLIArray:: invalid command name');
 
     return `your result is: ${result}`;
+  }
+}
+
+export class Validator {
+  static universalValidator(parsedStringInputArray: string[]): ValidationResult {
+    const validToolList = ['MTools', 'help'];
+    if (validToolList.indexOf(parsedStringInputArray[0]) !== -1) {
+      return {
+        tool: parsedStringInputArray[0],
+        isValid: true,
+        errorMessage: '',
+      };
+    }
+    if (parsedStringInputArray[0] === '') {
+      return {
+        tool: '',
+        isValid: true,
+        errorMessage: '',
+      };
+    }
+
+    return {
+      tool: 'Invalid tool',
+      isValid: false,
+      errorMessage: `This command line system only supports the following tools: ${validToolList.join(
+        ',',
+      )}`,
+    };
+  }
+
+  /*
+    StringArray parsedStringInputArray : " "で分割されて文字列の配列(トークンと呼ばれる)になった元のコマンドライン入力。
+    return AssociativeArray : {'isValid': <Boolean>, 'errorMessage': <String>} の形。ここでは、'isValid'はコマンドラインからの入力が有効な場合には真、無効な場合には偽となります。
+    返される連想配列は、与えられた文字列配列が有効なトークンに対するMToolsのルールに従っているかどうかに応じて、'isValid'キーに対してtrueあるいはfalseを返すことができます。入力が有効でない場合は、errorMessageが設定されます。
+
+    このメソッドは、最初にすべてのコマンドのエラーをチェックし、入力がそのチェックを通過した場合、余分な制約（例えば、0で除算することができない等）がある場合には、各コマンドに対して固有のエラーをチェックします。
+
+    入力検証(universal, commandArguments)の各レベルには個別のチェックが含まれていますが、ここでは参考までにすべてのチェックのリストを示しています。
+      - 総トークン数は3である必要があります。
+      - packageNameを表す最初のトークンは、"MTools"である必要があります。
+      - commandNameを表す2番目のトークンは、以下のいずれか1つだけになります : {add"、"subtract"、"multiply"、"divide"、"exp"、"log"、"abs"、"sqrt"、"round"、"ceil"、"floor"}。
+
+      - 引数を表す第三のトークンは、変換された数値を、","で分割することで、さらに解析できるようにする必要があります。
+      - 第二のトークンが {"abs", "round", "ceil", "floor", "sqrt"}の場合、1つの引数だけ与えられます。
+      - 第二のトークンが {"add", "subtract", "multiply", "divide", "exp", "log"}の場合、2つの引数が与えられます。
+
+      - 第二のトークンが'divide'の場合、第二引数は0となってはいけません。
+      - 第二のトークンが'sqrt'の場合、引数は負の数となってはいけません。
+      - 第二のトークンが'log'の場合、第一引数は1より大きく、第二引数は正の数でなければなりません。
+  */
+
+  static parsedArrayValidator(parsedStringInputArray: string[]): ValidationResult {
+    // すべてのコマンドに適用されるルールに照らし合わせて入力をチェックします。
+    let validatorResponse = Validator.universalValidator(parsedStringInputArray);
+    if (!validatorResponse.isValid) return validatorResponse;
+
+    // 入力が最初のvalidatorを通過した場合、どのコマンドが与えられたかに基づいて、より具体的な入力の検証を行います。
+    if (validatorResponse.tool === 'MTools') {
+      validatorResponse = MTools.universalMToolsValidator(parsedStringInputArray);
+      if (!validatorResponse.isValid) return validatorResponse;
+
+      validatorResponse = MTools.commandArgumentsValidator(parsedStringInputArray.slice(1, 3));
+      if (!validatorResponse.isValid) return validatorResponse;
+
+      return { tool: 'MTools', isValid: true, errorMessage: '' };
+    }
+
+    if (validatorResponse.tool === 'help') {
+      return { tool: 'help', isValid: true, errorMessage: '' };
+    }
+
+    return { tool: '', isValid: true, errorMessage: '' };
   }
 }

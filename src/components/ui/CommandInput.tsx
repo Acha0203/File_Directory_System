@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { MTools } from '../../model';
+import { CommandLine, MTools, Validator } from '../../model';
 import { fileDirectoryActions } from '../../store/fileDirectorySystem';
 
 import type { FDSState } from '../../types';
@@ -28,29 +28,55 @@ const CommandInput = () => {
         if (history[0].id <= -1) {
           dispatch(fileDirectoryActions.clearHistory());
         }
-        const validatorResponse = MTools.parsedArrayValidator(
-          MTools.commandLineParser(inputCommand),
+
+        const validatorResponse = Validator.parsedArrayValidator(
+          CommandLine.commandLineParser(inputCommand),
         );
+
         if (!validatorResponse.isValid) {
           dispatch(
             fileDirectoryActions.addHistory({
               id: historyId,
+              tool: validatorResponse.tool,
               command: inputCommand,
               isValid: false,
               result: validatorResponse.errorMessage,
             }),
           );
         } else {
-          dispatch(
-            fileDirectoryActions.addHistory({
-              id: historyId,
-              command: inputCommand,
-              isValid: true,
-              result: MTools.evaluatedResultsStringFromParsedCLIArray(
-                MTools.commandLineParser(inputCommand),
-              ),
-            }),
-          );
+          if (validatorResponse.tool === 'MTools') {
+            dispatch(
+              fileDirectoryActions.addHistory({
+                id: historyId,
+                tool: 'MTools',
+                command: inputCommand,
+                isValid: true,
+                result: MTools.evaluatedResultsStringFromParsedCLIArray(
+                  CommandLine.commandLineParser(inputCommand),
+                ),
+              }),
+            );
+          } else if (validatorResponse.tool === 'help') {
+            dispatch(
+              fileDirectoryActions.addHistory({
+                id: historyId,
+                tool: 'help',
+                command: inputCommand,
+                isValid: true,
+                result: 'Sorry, this command is under development.',
+              }),
+            );
+          } else {
+            dispatch(
+              fileDirectoryActions.addHistory({
+                id: historyId,
+                tool: '',
+                command: inputCommand,
+                isValid: true,
+                result: '',
+              }),
+            );
+          }
         }
         dispatch(fileDirectoryActions.setInputCommand(''));
         setCurrentHistoryId(historyId);
@@ -91,14 +117,14 @@ const CommandInput = () => {
   );
 
   // useEffect(() => {
-  //   console.log(history);
+  // console.log(history);
   //   console.log(historyId);
   //   console.log(currentHistoryId);
   //   console.log(history[currentHistoryId].command);
   //   console.log(inputCommand);
   //   console.log(isBackward);
   //   console.log(isForward);
-  // }, [history, historyId, currentHistoryId, inputCommand, isBackward, isForward]);
+  // }, [history, historyId, currentHistoryId, inputCommand]);
 
   return (
     <StyledConsoleInputWrapper>
