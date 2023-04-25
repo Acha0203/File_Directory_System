@@ -21,10 +21,10 @@ const Console = () => {
         {command.tool !== '' && (
           <div>
             {command.isValid ? (
-              <span>
+              <StyledResultText>
                 <StyledCyanText>{command.tool}: </StyledCyanText>
                 {command.result}
-              </span>
+              </StyledResultText>
             ) : (
               <StyledRedText>
                 {command.tool} error: {command.result}
@@ -103,6 +103,10 @@ const StyledRedText = styled.span`
 
 const StyledYellowText = styled.span`
   color: yellow;
+`;
+
+const StyledResultText = styled.span`
+  white-space: pre-wrap;
 `;
 
 export default Console;
