@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { CommandLine, MTools, Validator } from '../../model';
+import { CommandLine, Help, MTools, Validator } from '../../model';
 import { fileDirectoryActions } from '../../store/fileDirectorySystem';
 
 import type { FDSState } from '../../types';
@@ -63,7 +63,9 @@ const CommandInput = () => {
                 tool: 'help',
                 command: inputCommand,
                 isValid: true,
-                result: 'Sorry, this command is under development.',
+                result: Help.evaluatedResultsStringFromParsedCLIArray(
+                  CommandLine.commandLineParser(inputCommand),
+                ),
               }),
             );
           } else {

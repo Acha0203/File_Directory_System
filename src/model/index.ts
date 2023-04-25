@@ -1,4 +1,7 @@
+import helpTexts from '../consts/helpTexts';
+
 import type { ValidationResult } from '../types';
+
 /*
     GOAL: 
         一般的な基本的な数学操作のインターフェースとしてコマンドラインベースの数学ツールを構築する
@@ -39,6 +42,48 @@ export class CommandLine {
     return parsedStringInputArray;
   }
 }
+
+export class Help {
+  static universalHelpValidator(parsedStringInputArray: string[]): ValidationResult {
+    const validToolList = ['help', 'MTools'];
+
+    if (parsedStringInputArray.length > 2) {
+      return {
+        tool: 'help',
+        isValid: false,
+        errorMessage: `Help tool takes only one argument.`,
+      };
+    }
+    if (
+      validToolList.indexOf(parsedStringInputArray[1]) === -1 &&
+      parsedStringInputArray.length !== 1
+    ) {
+      return {
+        tool: 'help',
+        isValid: false,
+        errorMessage: `Help only supports the following tools: ${validToolList.join(',')}`,
+      };
+    }
+
+    return { tool: 'help', isValid: true, errorMessage: '' };
+  }
+
+  static evaluatedResultsStringFromParsedCLIArray(PCA: string[]): string {
+    let result = ``;
+
+    if (PCA.length <= 1) {
+      result = `
+        ${helpTexts.help.description}
+        ${helpTexts.MTools.description}
+      `;
+    } else if (PCA[1] === 'help') {
+      result = helpTexts.help.description;
+    } else if (PCA[1] === 'MTools') {
+      result = helpTexts.MTools.description;
+    }
+    return result;
+  }
+}
 export class MTools {
   /*
     StringArray parsedStringInputArray : " "で分割されて文字列の配列になった元のコマンドライン入力。
@@ -64,13 +109,6 @@ export class MTools {
       'ceil',
       'floor',
     ];
-    if (parsedStringInputArray[0] !== 'MTools') {
-      return {
-        tool: 'MTools',
-        isValid: false,
-        errorMessage: `only MTools package supported by this app. input must start with 'MTools'`,
-      };
-    }
     if (parsedStringInputArray.length !== 3) {
       return {
         tool: 'MTools',
@@ -297,6 +335,9 @@ export class Validator {
     }
 
     if (validatorResponse.tool === 'help') {
+      validatorResponse = Help.universalHelpValidator(parsedStringInputArray);
+      if (!validatorResponse.isValid) return validatorResponse;
+
       return { tool: 'help', isValid: true, errorMessage: '' };
     }
 
