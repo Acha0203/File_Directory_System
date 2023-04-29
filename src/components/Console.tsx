@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef, useCallback, useEffect } from 'react';
 
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -36,11 +36,28 @@ const Console = () => {
     );
   });
 
+  // scrollBottomRef を作成しスクロールさせたい場所にある Element にセット
+  const scrollBottomRef = createRef<HTMLDivElement>();
+  // このコールバックを呼び出して scrollBottomRef.current.scrollIntoView() を呼び出してスクロール
+  const scrollToBottom = useCallback(() => {
+    scrollBottomRef?.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+    console.log('Contents have been scrolled!');
+  }, [scrollBottomRef]);
+
+  // useEffect() 内はページが描画されたあとに呼び出される
+  useEffect(() => {
+    // ページが描画されたらリストの末尾までスクロール
+    scrollToBottom();
+  }, [scrollToBottom]);
+
   return (
     <StyledConsole>
       <StyledConsoleTitleBar>Command Line Echo</StyledConsoleTitleBar>
       <StyledConsoleBody>
-        <StyledConsoleTexts>{listItems}</StyledConsoleTexts>
+        <StyledConsoleTexts ref={scrollBottomRef}>{listItems}</StyledConsoleTexts>
       </StyledConsoleBody>
       <CommandInput />
     </StyledConsole>
