@@ -44,7 +44,6 @@ const Console = () => {
       behavior: 'smooth',
       block: 'end',
     });
-    console.log('Contents have been scrolled!');
   }, [scrollBottomRef]);
 
   // useEffect() 内はページが描画されたあとに呼び出される
